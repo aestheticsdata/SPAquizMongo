@@ -1,0 +1,8 @@
+label {
+    display: inline;
+}
+
+input[type="radio"]{
+    margin-top: 0;
+    line-height: normal;
+}

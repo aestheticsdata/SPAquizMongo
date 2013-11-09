@@ -1,0 +1,57 @@
+@import url(reset.css);
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.wrapper {
+	width: 640px;
+	margin:0 auto;
+}
+
+.wrapper #login {
+    background-color: #12b434;
+}
+
+.wrapper #afterLogin {
+    height: 240px;
+    background-color: #b1bead;
+}
+
+#intitule {
+    border: 3px solid blue;
+    padding: 10px;
+    margin: 0 10px 10px;
+    text-align: center;
+}
+
+#choices {
+    margin-left: 40px;
+}
+
+#nextButton {
+    /*margin-top: 50px;*/
+}
+
+#backButton {
+    display: none;
+    margin-top: 40px;
+}
+
+li {
+    list-style-type: none;
+}
+
+#warnValidate {
+    color: #f00;
+}
+
+#login p {
+    text-align: center;
+}
+
+#afterLogin {
+    /*visibility: hidden;*/
+    display: none;
+}

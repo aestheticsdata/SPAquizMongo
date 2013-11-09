@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+	<head>
+		<!--<link rel="stylesheet" type="text/css" href="./css/main.css">-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+        <link href="css/addon.css" rel="stylesheet">
+		<script data-main="build/out/app.min.js" src="js/require.js"></script>
+	</head>
+
+	<body>
+        <div class="container">
+            <div id="afterLogin" class="">
+                <div id="questions">
+                    <div id="intitule" class="row lead span7 offset2 text-center"></div>
+                    <div class="row span3 offset4">
+                        <ul id="choices" class="unstyled text-left"></ul>
+                    </div>
+                </div>
+                <div id="score" class="row span3 offset4 text-center text-success"></div>
+                <div class="row">
+                <ul class="pager span3 offset4">
+                    <li><a href="#" id="backButton">Previous</a></li>
+                    <li><a href="#" id="nextButton">Next</a></li>
+                </ul>
+                </div>
+                <div id="warnValidate" class="text-center text-error"></div>
+            </div>
+        </div>
+
+
+
+        <!-- bootstrap -->
+        <div class="container">
+            <div id="login">
+                <div class="row">
+                    <!--<div class="span12">-->
+                        <h1><p class="text-center">Welcome <span id="welcomeName"></span></p></h1>
+                    <!--</div>-->
+                </div>
+                <div class="row">
+                        <div class="container">
+
+                            <form class="form-signin">
+                                <h2 class="form-signin-heading">Please sign in</h2>
+                                <input type="text" class="input-block-level" placeholder="user name" id="userName">
+                                <input type="password" class="input-block-level" placeholder="Password" id="password">
+                                <input class="btn btn-large btn-primary" type="button" value="sign in" id="signin_button"></button>
+                            </form>
+
+                        </div>
+                </div>
+                <div class="row">
+                    <div id="wrongLogin" class="span12 text-center text-error"></div>
+                </div>
+            </div>
+        </div>
+        <!--<script src="js/bootstrap.min.js"></script>-->
+	</body>
+</html>

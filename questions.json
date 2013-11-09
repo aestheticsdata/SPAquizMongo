@@ -1,0 +1,39 @@
+{
+    "questions":[
+        {
+            "question": "What is Backbone.js ?",
+            "choices": ["a car", "a MVC framework", "a bone", "an egg", "nothing"],
+            "correctAnswer": 1
+        },
+        {
+            "question": "What is AngularJS ?",
+            "choices": ["A mathematical concept", "something strange", "a great MVC framework"],
+            "correctAnswer": 2
+        },
+        {
+            "question": "What is the best food on earth ?",
+            "choices": ["foie gras", "french fries", "pizzas", "ramen"],
+            "correctAnswer": 0
+        },
+        {
+            "question": "What is the best band on earth ?",
+            "choices": ["Iron Maiden", "Led Zeppelin", "Dire Straits", "Metallica", "The Cure"],
+            "correctAnswer": 1
+        },
+        {
+            "question": "2 | 1 = ?",
+            "choices": ["0", "1", "2", "3", "4"],
+            "correctAnswer": 3
+        },
+        {
+	        "question": "2 << 1 = ?",
+	        "choices": ["27", "31", "4"],
+	        "correctAnswer": 2
+        },
+        {
+	        "question": "What does mean LHC ?",
+	        "choices": ["Large Hadron Collider", "Low Health Cheese", "Light Hyper Cool"],
+	        "correctAnswer": 0
+        }
+    ]
+}
