@@ -1,3 +1,4 @@
+'use strict';
 var restify     = require('restify');
 var mongoAccess = require('./mongoAccess');
 
@@ -8,21 +9,20 @@ restServer
     .use(restify.fullResponse());
 
 restServer.get( '/questions', getQuestions);
-restServer.post('/questions', addQuestions);
+restServer.post('/questions', addQuestion);
 
 restServer.listen(8765);
 
 function getQuestions(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    mongoAccess.qm.find(function(err, questions){
-        if (err) {
-            console.log('error');
-        } else {
-            res.send(questions);
-        }
+
+    mongoAccess.dbCollection.find().toArray(function (err, questionsJson) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.send(questionsJson);
     });
 }
 
-function addQuestions(req, res, next) {
-     console.log(req.params);
+function addQuestion(req, res, next) {
+    req.params.correctAnswer = parseInt(req.params.correctAnswer);
+    var newEntry = req.params;
+    mongoAccess.insertNewItem(newEntry, res);
 }

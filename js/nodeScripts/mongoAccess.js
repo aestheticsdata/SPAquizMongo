@@ -1,22 +1,25 @@
-var mongoose = require('mongoose');
+'use strict';
+var mongodb  = require('mongodb');
 var config   = require('./config');
 
-var db = mongoose.connection;
+var Db = require('mongodb').Db;
+var MongoClient = require('mongodb').MongoClient;
+var Server = require('mongodb').Server;
+var BSON = require('mongodb').BSON;
+var ObjectID = require('mongodb').ObjectID;
 
-var questionsSchema = mongoose.Schema({
-    question:String,
-    choices:Array,
-    correctAnswer:Number
+var mongoclient = new MongoClient(new Server("127.0.0.1", 27017, {native_parser:true}));
+
+var db;
+mongoclient.open(function (err, monclient) {
+    db = mongoclient.db('quiz');
+    exports.dbCollection = db.collection('questions');
 });
 
-var QuestionsModel = mongoose.model('Questions', questionsSchema); // the third parameter could be a collection name
-
-db.on('error', function () {
-    console.log('connection error');
-});
-
-mongoose.connect(config.param.mongoose_local);
-
-exports.qm = QuestionsModel;
+exports.insertNewItem = function (newEntry, res) {
+    db.collection('questions').insert(newEntry, function () {
+        res.send(201);
+    });
+};
 
 

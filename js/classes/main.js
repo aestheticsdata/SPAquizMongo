@@ -115,7 +115,7 @@ define(function (require) {
         computeScore: function () {
     
             for (var i=0; i<this.questionsLength; i+=1) {
-                if (this.storedAnswers[i] === this.allQuestions[i].correctAnswer) {
+                if (this.storedAnswers[i] === parseInt(this.allQuestions[i].correctAnswer)) {
                     this.score += 1;
                 }
             }
