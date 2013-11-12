@@ -22,4 +22,11 @@ exports.insertNewItem = function (newEntry, res) {
     });
 };
 
+exports.deleteQuestions = function (questionsToBeDeleted, res) {
+    for(var _id in questionsToBeDeleted) {
+        db.collection('questions').remove({"_id": ObjectID(""+_id)}, function () {});
+    }
+    res.send(200);
+}
+
 

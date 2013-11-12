@@ -27,3 +27,12 @@ li {
     -ms-user-select: none;
     user-select: none;
 }
+
+.selectedBtn {
+    border: 3px solid #00bfff;
+}
+
+i[class*="icon"] {
+    margin-right:5px;
+    vertical-align: middle;
+}

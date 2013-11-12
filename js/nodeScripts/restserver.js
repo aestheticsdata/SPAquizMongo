@@ -10,6 +10,7 @@ restServer
 
 restServer.get( '/questions', getQuestions);
 restServer.post('/questions', addQuestion);
+restServer.post('/questionsDelete', deleteQuestion);
 
 restServer.listen(8765);
 
@@ -25,4 +26,10 @@ function addQuestion(req, res, next) {
     req.params.correctAnswer = parseInt(req.params.correctAnswer);
     var newEntry = req.params;
     mongoAccess.insertNewItem(newEntry, res);
+}
+
+function deleteQuestion(req, res, next) {
+//    console.log(req.params);
+    mongoAccess.deleteQuestions(req.params, res);
+//    res.send(200);
 }
