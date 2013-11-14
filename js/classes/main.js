@@ -79,7 +79,7 @@ define(function (require) {
                 }  else {
                     self.computeScore();
                     self.$intituleDiv.html('RESULTS');
-                    $('#score').html('your score is : ' + self.score);
+                    $('#score').html('your score is : ' + self.score + " / " + self.questionsLength);
                     self.$nextButton.hide();
                     self.$backButton.hide();
                 }

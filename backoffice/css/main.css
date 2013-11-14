@@ -46,7 +46,25 @@ i[class*="icon"] {
 
 #editMode {
     display: inline-block;
-    background: #dddd00;
-    padding: 4px;
+    background: #f7ff51;
+    color: #aaaaaa;
+    font-size: 10px;
+    padding: 1px 4px 1px 4px;
+    margin-left: 40px;
     border: solid 2px #ffa01c;
+}
+
+#logMessage {
+    width: 180px;
+    color: #0f0;
+    background-color: #040;
+}
+
+.rollOver {
+    text-decoration: underline;
+    color:#00f;
+}
+.rollOut {
+    text-decoration: none;
+    color: #000;
 }

@@ -33,7 +33,8 @@ $(function () {
                    $removeButton    = $('#removeButton'),
                    $choiceContainer = $('#choiceContainer'),
                    $choice          = $('.choice'),
-                   choiceLength     = $choice.length;
+                   choiceLength     = $choice.length,
+                   $logMessage      = $('#logMessage');
 
                $addButton.on('click', function (e) {
                    choiceLength = $('.choice').length;
@@ -54,17 +55,19 @@ $(function () {
                $('#questionForm').submit(function (e) {
                    e.preventDefault();
                    var serializedForm = $(this).serialize();
-//                   console.log(serializedForm);
                    $.post('http://127.0.0.1:8765/questions', serializedForm)
                        .done(function () {
-                           console.log('done');
-                           $('#errMessage').css('color', '#0f0');
-                           $('#errMessage').text('question inserted into DB');
+                           $logMessage
+                               .text('question inserted into DB')
+                               .delay(800)
+                               .fadeOut(200);
                            $('#questionForm')[0].reset();
                        })
                        .fail(function () {
-                           $('#errMessage').css('color', '#f00');
-                           $('#errMessage').text('could not connect to restify');
+                           $logMessage
+                               .css('color', '#f00')
+                               .css('background-color', '#000')
+                               .text('could not connect to restify');
                        });
                });
            });
@@ -72,6 +75,8 @@ $(function () {
    });
 
    $('#deleteBtn').on('click', function () {
+       var $deleteBtn = $(this);
+
        if(!isDelete) {
            $('#createBtn').removeClass('selectedBtn');
            $('#editBtn').removeClass('selectedBtn');
@@ -89,34 +94,42 @@ $(function () {
                    .append(data);
                // TODO: sortir cette function
                $.getJSON('http://127.0.0.1:8765/questions', function (data) {
-//                   console.log(data);
                    var $questionsContainer = $('#questionsContainer');
-                   var $deleteSelectedBtn  = $('#deleteSelectedBtn');
 
                    $.each(data, function (key, entry) {
                        // TODO : sortir le html
-                       var question = '</input><li><input type="checkbox" id="'+entry._id+'" name="'+entry._id+'"><label class="checkbox inline" for="'+key+'">'+entry.question+'</label></li>';
+                       var question = '<li><input type="checkbox" id="'+entry._id+'" name="'+entry._id+'"><label class="checkbox inline" for="'+key+'">'+entry.question+'</label></li>';
                        $questionsContainer.append(question);
-                       $('#'+entry._id).next().on('click', function (e) {
-                           console.log('click');
-                            editQuestion(entry);
+                       $('#'+entry._id)
+                           .next()
+                           .on('mouseenter', function (e) {
+                                $(this)
+                                    .removeClass('rollOut')
+                                    .addClass('rollOver');
+                           })
+                           .on('mouseleave', function (e) {
+                                $(this)
+                                    .removeClass('rollOver')
+                                    .addClass('rollOut');
+                           })
+                           .on('click', function (e) {
+                                editQuestion(entry);
                        });
                    });
                    $('#deleteForm').submit(function (e) {
                        e.preventDefault();
                        var serializedForm = $(this).serialize();
-                       console.log(serializedForm);
-                       $.post('http://127.0.0.1:8765/questionsDelete', serializedForm)
-                           .done(function () {
-                               console.log('done');
-                               // update question list
-//                       $('#errMessage').css('color', '#0f0');
-//                       $('#errMessage').text('question inserted into DB');
-                           })
-                           .fail(function () {
-//                       $('#errMessage').css('color', '#f00');
-//                       $('#errMessage').text('could not connect to restify');
-                           });
+                       if ($('input[type=checkbox]:checked').length !== 0) { // if no checkbox are checked disable submit button
+                           $.post('http://127.0.0.1:8765/questionsDelete', serializedForm)
+                               .done(function () {
+                                   isDelete = false;
+                                   $deleteBtn.trigger('click');
+                               })
+                               .fail(function () {
+                                   $('#errMessage').css('color', '#f00');
+                                   $('#errMessage').text('delete error');
+                               });
+                       }
                    });
                });
            });
@@ -127,7 +140,6 @@ $(function () {
        if(!isEdit) {
            $('#deleteBtn').removeClass('selectedBtn');
            $('#createBtn').removeClass('selectedBtn');
-//           $(this).addClass('selectedBtn');
 
            isCreate = false;
            isEdit   = true;
@@ -148,7 +160,8 @@ $(function () {
                    $removeButton    = $('#removeButton'),
                    $choiceContainer = $('#choiceContainer'),
                    $choice          = $('.choice'),
-                   choiceLength     = $choice.length;
+                   choiceLength     = $choice.length,
+                   $logMessage      = $('#logMessage');
 
                for (var i in entry.choices ) {
                    if (entry.correctAnswer == i) {  // == to cast to int, TODO: use parseInt
@@ -178,24 +191,24 @@ $(function () {
                $('#editForm').submit(function (e) {
                    e.preventDefault();
                    var serializedForm = $(this).serialize();
-//                   console.log(serializedForm);
-//                   console.log(entry._id);
                    $.post('http://127.0.0.1:8765/questionsUpdate', serializedForm)
                        .done(function () {
-                           console.log('done');
-//                           $('#errMessage').css('color', '#0f0');
-//                           $('#errMessage').text('question inserted into DB');
-//                           $('#questionForm')[0].reset();
+                           $logMessage
+                               .text('question updated')
+                               .delay(800)
+                               .fadeOut(200);
+                           $('#editForm')[0].reset();
                        })
                        .fail(function () {
-//                           $('#errMessage').css('color', '#f00');
-//                           $('#errMessage').text('could not connect to restify');
+                           $logMessage
+                               .css('color', '#f00')
+                               .css('background-color', '#000')
+                               .text('could not connect to restify');
                        });
                });
            });
        }
    };
 
-//   $('#createBtn').trigger('click'); // display create view on page load
-   $('#deleteBtn').trigger('click');
+   $('#createBtn').trigger('click'); // display create view on page load
 });
