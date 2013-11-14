@@ -75,66 +75,66 @@ $(function () {
    });
 
    $('#deleteBtn').on('click', function () {
-       var $deleteBtn = $(this);
+        var $deleteBtn = $(this);
 
-       if(!isDelete) {
-           $('#createBtn').removeClass('selectedBtn');
-           $('#editBtn').removeClass('selectedBtn');
-           $(this).addClass('selectedBtn');
+        if(!isDelete) {
+            $('#createBtn').removeClass('selectedBtn');
+            $('#editBtn').removeClass('selectedBtn');
+            $(this).addClass('selectedBtn');
 
-           isCreate = false;
-           isEdit   = false;
-           isDelete = true;
+            isCreate = false;
+            isEdit   = false;
+            isDelete = true;
 
-           $('#editMode').hide();
+            $('#editMode').hide();
 
-           $.get('./views/delete.html', function (data) {
-               $('#view')
-                   .empty()
-                   .append(data);
-               // TODO: sortir cette function
-               $.getJSON('http://127.0.0.1:8765/questions', function (data) {
-                   var $questionsContainer = $('#questionsContainer');
+            $.get('./views/delete.html', function (data) {
+                $('#view')
+                    .empty()
+                    .append(data);
+                // TODO: sortir cette function
+                $.getJSON('http://127.0.0.1:8765/questions', function (data) {
+                    var $questionsContainer = $('#questionsContainer');
 
-                   $.each(data, function (key, entry) {
-                       // TODO : sortir le html
-                       var question = '<li><input type="checkbox" id="'+entry._id+'" name="'+entry._id+'"><label class="checkbox inline" for="'+key+'">'+entry.question+'</label></li>';
-                       $questionsContainer.append(question);
-                       $('#'+entry._id)
-                           .next()
-                           .on('mouseenter', function (e) {
+                    $.each(data, function (key, entry) {
+                        // TODO : sortir le html
+                        var question = '<li><input type="checkbox" id="'+entry._id+'" name="'+entry._id+'"><label class="checkbox inline" for="'+key+'">'+entry.question+'</label></li>';
+                        $questionsContainer.append(question);
+                        $('#'+entry._id)
+                            .next()
+                            .on('mouseenter', function (e) {
                                 $(this)
                                     .removeClass('rollOut')
                                     .addClass('rollOver');
-                           })
-                           .on('mouseleave', function (e) {
+                            })
+                            .on('mouseleave', function (e) {
                                 $(this)
                                     .removeClass('rollOver')
                                     .addClass('rollOut');
-                           })
-                           .on('click', function (e) {
+                            })
+                            .on('click', function (e) {
                                 editQuestion(entry);
-                       });
-                   });
-                   $('#deleteForm').submit(function (e) {
-                       e.preventDefault();
-                       var serializedForm = $(this).serialize();
-                       if ($('input[type=checkbox]:checked').length !== 0) { // if no checkbox are checked disable submit button
-                           $.post('http://127.0.0.1:8765/questionsDelete', serializedForm)
-                               .done(function () {
-                                   isDelete = false;
-                                   $deleteBtn.trigger('click');
-                               })
-                               .fail(function () {
-                                   $('#errMessage').css('color', '#f00');
-                                   $('#errMessage').text('delete error');
-                               });
-                       }
-                   });
-               });
-           });
-       }
-   });
+                            });
+                    });
+                    $('#deleteForm').submit(function (e) {
+                        e.preventDefault();
+                        var serializedForm = $(this).serialize();
+                        if ($('input[type=checkbox]:checked').length !== 0) { // if no checkbox are checked disable submit button
+                            $.post('http://127.0.0.1:8765/questionsDelete', serializedForm)
+                                .done(function () {
+                                    isDelete = false;
+                                    $deleteBtn.trigger('click');
+                                })
+                                .fail(function () {
+                                    $('#errMessage').css('color', '#f00');
+                                    $('#errMessage').text('delete error');
+                                });
+                        }
+                    });
+                });
+            });
+        }
+    });
 
    function editQuestion(entry) {
        if(!isEdit) {
@@ -165,7 +165,7 @@ $(function () {
 
                for (var i in entry.choices ) {
                    if (entry.correctAnswer == i) {  // == to cast to int, TODO: use parseInt
-                       $choiceContainer.append('<div class="singleChoiceContainer"><label class="control-label">choice '+i+': </label><input type="text" name="choices" class="input-xxlarge choice" value="'+entry.choices[i]+'"></input><input type="radio" name="correctAnswer" class="radio" value="'+i+'" checked="checked"></input></div>')
+                       $choiceContainer.append('<div class="singleChoiceContainer"><label class="control-label">choice '+i+': </label><input type="text" name="choices" class="input-xxlarge choice" value="'+entry.choices[i]+'"></input><input type="radio" name="correctAnswer" class="radio" value="'+i+'" checked="checked"></input></div>');
                    } else {
                        $choiceContainer.append('<div class="singleChoiceContainer"><label class="control-label">choice '+i+': </label><input type="text" name="choices" class="input-xxlarge choice" value="'+entry.choices[i]+'"></input><input type="radio" name="correctAnswer" class="radio" value="'+i+'" ></input></div>');
                    }
@@ -208,7 +208,7 @@ $(function () {
                });
            });
        }
-   };
+   }
 
    $('#createBtn').trigger('click'); // display create view on page load
 });
