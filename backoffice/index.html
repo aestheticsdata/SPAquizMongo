@@ -12,9 +12,14 @@
 
     <body>
         <h1>Backoffice SPAquizMongo</h1>
-        <button id="createBtn" class="btn btn-success"><i class="icon-pencil"></i>create question</button>
-        <button id="deleteBtn" class="btn btn-warning"><i class="icon-remove"></i>delete question(s)</button>
-        <button id="editBtn" class="btn btn-primary"><i class="icon-edit"></i>edit question</button>
+        <div id="buttonBar">
+            <button id="createBtn" class="btn btn-success"><i class="icon-pencil"></i>create question</button>
+            <button id="deleteBtn" class="btn btn-warning"><i class="icon-remove"></i>delete / edit question(s)</button>
+            <span id="editMode">Edit Mode</span>
+            <!--<button id="editBtn" class="btn btn-primary"><i class="icon-edit"></i>edit question</button>-->
+        </div>
+
+        <div id="editBtn"></div>
         <br /><br />
         <div id="view"></div>
     </body>

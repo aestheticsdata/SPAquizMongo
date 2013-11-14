@@ -36,3 +36,17 @@ i[class*="icon"] {
     margin-right:5px;
     vertical-align: middle;
 }
+
+#editText {
+    font-size: 15px;
+    color: #f7ff51;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+#editMode {
+    display: inline-block;
+    background: #dddd00;
+    padding: 4px;
+    border: solid 2px #ffa01c;
+}

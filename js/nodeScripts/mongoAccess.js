@@ -29,4 +29,12 @@ exports.deleteQuestions = function (questionsToBeDeleted, res) {
     res.send(200);
 }
 
+exports.updateQuestion = function (updatedEntry, res) {
+    db.collection('questions').update({_id: ObjectID(""+updatedEntry._id)}, {$set:{question:updatedEntry.question, choices:updatedEntry.choices, correctAnswer:updatedEntry.correctAnswer}}, function (err, nb) {
+        if (!err) {
+            res.send(200);
+        }
+    });
+}
+
 
