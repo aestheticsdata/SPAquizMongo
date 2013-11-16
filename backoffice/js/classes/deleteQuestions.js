@@ -2,6 +2,7 @@
 
 var appState     = require('./appState.js');
 var editQuestion = require('./EditCreateQuestion.js');
+var VO           = require('./services/vo/deleteViewVO.js');
 
 var deleteQuestions = {
     init: function () {

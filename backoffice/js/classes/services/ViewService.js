@@ -1,16 +1,23 @@
 'use strict';
 
 var signals = require('signals');
+var EditCreateVO = require('./vo/EditCreateViewVO.js');
+var DeleteVO = require('./vo/DeleteViewVO.js');
 
 var VS = {
-    vw: '',
 
     loaded: new signals.Signal(),
 
     getView: function (view) {
         var self = this;
+
         $.get(view, function (data) {
-            self.vw = data;
+            if(view.search('create')) {
+                EditCreateVO.content = data;
+            }
+            if(view.search('delete')) {
+                DeleteVO.content = data;
+            }
             self.loaded.dispatch();
         });
     }

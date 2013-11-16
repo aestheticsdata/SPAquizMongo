@@ -17,6 +17,7 @@ $(function () {
 
 var appState = require('./appState.js');
 var VS       = require('./services/ViewService.js');
+var VO       = require('./services/vo/EditCreateViewVO.js');
 
 var editCreateQuestion = {
 
@@ -42,7 +43,7 @@ var editCreateQuestion = {
         function onViewLoaded() {
             $('#view')
                 .empty()
-                .append(VS.vw);
+                .append(VO.content);
 
             var $addButton       = $('#addButton'),
                 $removeButton    = $('#removeButton'),
@@ -134,8 +135,12 @@ var editCreateQuestion = {
                 $('#editMode').hide();
             }
 
-            VS.loaded.addOnce(onViewLoaded);
-            VS.getView('./views/create.html');
+            if (VO.content === '') {
+                VS.loaded.addOnce(onViewLoaded);
+                VS.getView('./views/create.html');
+            } else {
+                onViewLoaded();
+            }
         }
     },
 
@@ -147,7 +152,7 @@ var editCreateQuestion = {
  };
 
 module.exports = editCreateQuestion;
-},{"./appState.js":3,"./services/ViewService.js":5}],3:[function(require,module,exports){
+},{"./appState.js":3,"./services/ViewService.js":5,"./services/vo/EditCreateViewVO.js":7}],3:[function(require,module,exports){
 'use strict';
 
 var appState = {
@@ -170,6 +175,7 @@ module.exports = appState;
 
 var appState     = require('./appState.js');
 var editQuestion = require('./EditCreateQuestion.js');
+var VO           = require('./services/vo/deleteViewVO.js');
 
 var deleteQuestions = {
     init: function () {
@@ -211,9 +217,6 @@ var deleteQuestions = {
                                         .addClass('rollOut');
                                 })
                                 .on('click', function (e) {
-                                    console.log('--------------');
-                                    console.log(entry);
-                                    console.log('--------------');
                                     editQuestion.init(entry);
                                 });
                         });
@@ -240,20 +243,27 @@ var deleteQuestions = {
 };
 
 module.exports = deleteQuestions;
-},{"./EditCreateQuestion.js":2,"./appState.js":3}],5:[function(require,module,exports){
+},{"./EditCreateQuestion.js":2,"./appState.js":3,"./services/vo/deleteViewVO.js":8}],5:[function(require,module,exports){
 'use strict';
 
 var signals = require('signals');
+var EditCreateVO = require('./vo/EditCreateViewVO.js');
+var DeleteVO = require('./vo/DeleteViewVO.js');
 
 var VS = {
-    vw: '',
 
     loaded: new signals.Signal(),
 
     getView: function (view) {
         var self = this;
+
         $.get(view, function (data) {
-            self.vw = data;
+            if(view.search('create')) {
+                EditCreateVO.content = data;
+            }
+            if(view.search('delete')) {
+                DeleteVO.content = data;
+            }
             self.loaded.dispatch();
         });
     }
@@ -262,7 +272,18 @@ var VS = {
 module.exports = VS;
 
 
-},{"signals":6}],6:[function(require,module,exports){
+},{"./vo/DeleteViewVO.js":6,"./vo/EditCreateViewVO.js":7,"signals":9}],6:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+    content: ''
+}
+
+},{}],7:[function(require,module,exports){
+module.exports=require(6)
+},{}],8:[function(require,module,exports){
+module.exports=require(6)
+},{}],9:[function(require,module,exports){
 /*jslint onevar:true, undef:true, newcap:true, regexp:true, bitwise:true, maxerr:50, indent:4, white:false, nomen:false, plusplus:false */
 /*global define:false, require:false, exports:false, module:false, signals:false */
 

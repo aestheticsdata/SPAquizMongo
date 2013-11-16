@@ -2,6 +2,7 @@
 
 var appState = require('./appState.js');
 var VS       = require('./services/ViewService.js');
+var VO       = require('./services/vo/EditCreateViewVO.js');
 
 var editCreateQuestion = {
 
@@ -27,7 +28,7 @@ var editCreateQuestion = {
         function onViewLoaded() {
             $('#view')
                 .empty()
-                .append(VS.vw);
+                .append(VO.content);
 
             var $addButton       = $('#addButton'),
                 $removeButton    = $('#removeButton'),
@@ -119,8 +120,12 @@ var editCreateQuestion = {
                 $('#editMode').hide();
             }
 
-            VS.loaded.addOnce(onViewLoaded);
-            VS.getView('./views/create.html');
+            if (VO.content === '') {
+                VS.loaded.addOnce(onViewLoaded);
+                VS.getView('./views/create.html');
+            } else { // already loaded
+                onViewLoaded();
+            }
         }
     },
 
