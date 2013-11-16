@@ -29,6 +29,15 @@ var createQuestion = {
                         choiceLength     = $choice.length,
                         $logMessage      = $('#logMessage');
 
+                    if (true) { // change true: true is in create mode when mergin createQuestion.js and editQuestion.js
+                        $choiceContainer.append('' +
+                            '<div class="singleChoiceContainer">' +
+                                '<label class="control-label">choice 1: </label>' +
+                                '<input type="text" name="choices" class="input-xxlarge choice"></input>' +
+                                '<input type="radio" name="correctAnswer" class="radio" value="0" checked="true"></input>' +
+                            '</div>');
+                    }
+
                     $addButton.on('click', function (e) {
                         choiceLength = $('.choice').length;
                         var choiceInputField = '<div class="singleChoiceContainer"><label>choice '+(choiceLength+1)+': </label><input type="text" name="choices" class="input-xxlarge choice" ></input><input type="radio" class="radio" value="'+choiceLength+'" name="correctAnswer"></input></div>';

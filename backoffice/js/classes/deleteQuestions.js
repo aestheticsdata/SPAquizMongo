@@ -1,7 +1,7 @@
 'use strict';
 
 var appState     = require('./appState.js');
-var editQuestion = require('./editQuestion.js');
+var editQuestion = require('./EditCreateQuestion.js');
 
 var deleteQuestions = {
     init: function () {
@@ -10,7 +10,6 @@ var deleteQuestions = {
 
             if(!appState.isDelete) {
                 $('#createBtn').removeClass('selectedBtn');
-                $('#editBtn').removeClass('selectedBtn');
                 $(this).addClass('selectedBtn');
 
                 appState.isCreate = false;
@@ -44,7 +43,7 @@ var deleteQuestions = {
                                         .addClass('rollOut');
                                 })
                                 .on('click', function (e) {
-                                    editQuestion(entry);
+                                    editQuestion.init(entry);
                                 });
                         });
                         $('#deleteForm').submit(function (e) {
@@ -53,8 +52,8 @@ var deleteQuestions = {
                             if ($('input[type=checkbox]:checked').length !== 0) { // if no checkbox are checked disable submit button
                                 $.post('http://127.0.0.1:8765/questionsDelete', serializedForm)
                                     .done(function () {
-                                        appState.isDelete = false;
-                                        $deleteBtn.trigger('click');
+                                        appState.isDelete = false; // needed to reload the page
+                                        $deleteBtn.trigger('click'); // reload the page
                                     })
                                     .fail(function () {
                                         $('#errMessage').css('color', '#f00');

@@ -52,6 +52,7 @@ i[class*="icon"] {
     padding: 1px 4px 1px 4px;
     margin-left: 40px;
     border: solid 2px #ffa01c;
+    border-radius: 4px;
 }
 
 #logMessage {
