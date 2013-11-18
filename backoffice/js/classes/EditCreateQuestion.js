@@ -66,7 +66,11 @@ var editCreateQuestion = {
                 $('#hidden').val(self.entry._id);
 
                 for (var i in self.entry.choices ) {
-                    $choiceContainer.append('<div class="singleChoiceContainer"><label class="control-label">choice '+(parseInt(i,10)+1)+': </label><input type="text" name="choices" class="input-xxlarge choice" value="'+self.entry.choices[i]+'"></input><input type="radio" name="correctAnswer" class="radio" value="'+i+'" ></input></div>');
+                    $choiceContainer.append('<div class="singleChoiceContainer">' +
+                                              '<label class="control-label">choice '+(parseInt(i,10)+1) +': </label>' +
+                                              '<input type="text" name="choices" class="input-xxlarge choice" value="'+self.entry.choices[i]+'"></input>' +
+                                              '<input type="radio" name="correctAnswer" class="radio" value="'+i+'" ></input>' +
+                                            '</div>');
                     if (self.entry.correctAnswer == parseInt(i, 10)) {
                         $choiceContainer.find('input[type=radio]').prop('checked', true);
                     }
@@ -75,7 +79,11 @@ var editCreateQuestion = {
 
             $addButton.on('click', function (e) {
                 choiceLength = $('.choice').length;
-                var choiceInputField = '<div class="singleChoiceContainer"><label>choice '+(choiceLength+1)+': </label><input type="text" name="choices" class="input-xxlarge choice" ></input><input type="radio" class="radio" value="'+choiceLength+'" name="correctAnswer"></input></div>';
+                var choiceInputField = '<div class="singleChoiceContainer">' +
+                                         '<label>choice '+(choiceLength+1)+': </label>' +
+                                         '<input type="text" name="choices" class="input-xxlarge choice" ></input>' +
+                                         '<input type="radio" class="radio" value="'+choiceLength+'" name="correctAnswer"></input>' +
+                                       '</div>';
 
                 e.preventDefault();
 
