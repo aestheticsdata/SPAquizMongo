@@ -13,6 +13,8 @@ var editCreateQuestion = {
 
     urls: {},
 
+    minInputTextNumber: 2,
+
     setUrls: function (urls) {
         this.urls = urls;
     },
@@ -52,6 +54,11 @@ var editCreateQuestion = {
                     '<label class="control-label">choice 1: </label>' +
                     '<input type="text" name="choices" class="input-xxlarge choice"></input>' +
                     '<input type="radio" name="correctAnswer" class="radio" value="0" checked="true"></input>' +
+                    '</div>'+
+                    '<div class="singleChoiceContainer">' +
+                    '<label class="control-label">choice 2: </label>' +
+                    '<input type="text" name="choices" class="input-xxlarge choice"></input>' +
+                    '<input type="radio" name="correctAnswer" class="radio" value="1"></input>' +
                     '</div>');
             } else { // edit mode
                 $('#questionForm').prepend('<input type="hidden" id="hidden" name="_id"></script>');
@@ -78,7 +85,7 @@ var editCreateQuestion = {
             $removeButton.on('click', function (e) {
                 var $singleChoiceContainer = $('.singleChoiceContainer');
                 e.preventDefault();
-                if ($singleChoiceContainer.length > 1) {
+                if ($singleChoiceContainer.length > self.minInputTextNumber) {
                     $singleChoiceContainer.last().remove();
                 }
             });

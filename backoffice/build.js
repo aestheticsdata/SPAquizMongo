@@ -26,18 +26,15 @@ var VS        = require('./services/ViewService.js');
 var KeepScope = require('./helpers/KeepScope.js');
 
 var editCreateQuestion = {
-
-    createRESTURL: 'http://127.0.0.1:8765/questions',
-
-    editRESTURL: 'http://127.0.0.1:8765/questionsUpdate',
+    keepScope: new KeepScope(),
 
     entry: false,
-
-    keepScope: new KeepScope(),
 
     vs: new VS(),
 
     urls: {},
+
+    minInputTextNumber: 2,
 
     setUrls: function (urls) {
         this.urls = urls;
@@ -50,6 +47,7 @@ var editCreateQuestion = {
             this.entry = entry;
             this.setup(entry);
         } else {
+            // see comment in deleteQuestion.js just before $('#deleteBtn').on('click', function (event) {...});
             $('#createBtn').on('click', this.keepScope.save(this.setup, this));
         }
     },
@@ -77,6 +75,11 @@ var editCreateQuestion = {
                     '<label class="control-label">choice 1: </label>' +
                     '<input type="text" name="choices" class="input-xxlarge choice"></input>' +
                     '<input type="radio" name="correctAnswer" class="radio" value="0" checked="true"></input>' +
+                    '</div>'+
+                    '<div class="singleChoiceContainer">' +
+                    '<label class="control-label">choice 2: </label>' +
+                    '<input type="text" name="choices" class="input-xxlarge choice"></input>' +
+                    '<input type="radio" name="correctAnswer" class="radio" value="1"></input>' +
                     '</div>');
             } else { // edit mode
                 $('#questionForm').prepend('<input type="hidden" id="hidden" name="_id"></script>');
@@ -103,14 +106,14 @@ var editCreateQuestion = {
             $removeButton.on('click', function (e) {
                 var $singleChoiceContainer = $('.singleChoiceContainer');
                 e.preventDefault();
-                if ($singleChoiceContainer.length > 1) {
+                if ($singleChoiceContainer.length > self.minInputTextNumber) {
                     $singleChoiceContainer.last().remove();
                 }
             });
 
             $('#questionForm').submit(function (e) {
                 var serializedForm = $(this).serialize();
-                var url            = self.entry ? self.editRESTURL : self.createRESTURL;
+                var url            = self.entry ? self.urls.editRESTURL : self.urls.createRESTURL;
 
                 e.preventDefault();
 
@@ -205,6 +208,14 @@ var deleteQuestions = {
     init: function () {
         var self = this;
 
+        /*
+         in EditCreateQuestion.js the keepScope.save is shorter.
+         Here we need to keep track of the deleteBtn jquery object.
+         But it's tricky because in EditCreateQuestion.js,
+         the setup  method is called with a parameter "e" which is not an event but a question object when editing mode.
+         This complicated syntax is just here to be able to define once $deleteBtn, but $deleteBtn is used only 2 times.
+         So if we want, we can get rid of this complicated syntax, and duplicate the jquery call: $('#deleteBtn')
+        */
         $('#deleteBtn').on('click', function (event) {
             self.keepScope.save(self.setup, self, event)();
         });
