@@ -1,24 +1,31 @@
 'use strict';
 
-var appState = require('./appState.js');
-var VS       = require('./services/ViewService.js');
-var VO       = require('./services/vo/EditCreateViewVO.js');
+var appState  = require('./appState.js');
+var VS        = require('./services/ViewService.js');
+var KeepScope = require('./helpers/KeepScope.js');
 
 var editCreateQuestion = {
-
-    createRESTURL: 'http://127.0.0.1:8765/questions',
-
-    editRESTURL: 'http://127.0.0.1:8765/questionsUpdate',
+    keepScope: new KeepScope(),
 
     entry: false,
 
+    vs: new VS(),
+
+    urls: {},
+
+    setUrls: function (urls) {
+        this.urls = urls;
+    },
+
     init: function (entry) {
         var self = this;
+
         if (entry) {
             this.entry = entry;
             this.setup(entry);
         } else {
-            $('#createBtn').on('click', this.keepScope(this.setup, this));
+            // see comment in deleteQuestion.js just before $('#deleteBtn').on('click', function (event) {...});
+            $('#createBtn').on('click', this.keepScope.save(this.setup, this));
         }
     },
 
@@ -26,9 +33,10 @@ var editCreateQuestion = {
         var self = this;
 
         function onViewLoaded() {
+            console.log('onViewLoaded');
             $('#view')
                 .empty()
-                .append(VO.content);
+                .append(self.vs.getVO());
 
             var $addButton       = $('#addButton'),
                 $removeButton    = $('#removeButton'),
@@ -77,7 +85,7 @@ var editCreateQuestion = {
 
             $('#questionForm').submit(function (e) {
                 var serializedForm = $(this).serialize();
-                var url            = self.entry ? self.editRESTURL : self.createRESTURL;
+                var url            = self.entry ? self.urls.editRESTURL : self.urls.createRESTURL;
 
                 e.preventDefault();
 
@@ -120,19 +128,13 @@ var editCreateQuestion = {
                 $('#editMode').hide();
             }
 
-            if (VO.content === '') {
-                VS.loaded.addOnce(onViewLoaded);
-                VS.getView('./views/create.html');
+            if (self.vs.getVO() === undefined) {
+                self.vs.loaded.addOnce(onViewLoaded);
+                self.vs.getView('./views/create.html');
             } else { // already loaded
                 onViewLoaded();
             }
         }
-    },
-
-    keepScope: function (listener, context) {
-        return function () {
-            listener.call(context);
-        };
     }
  };
 

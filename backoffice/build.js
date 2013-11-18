@@ -3,21 +3,27 @@
 
 var createQuestion  = require('./classes/EditCreateQuestion.js');
 var deleteQuestions = require('./classes/deleteQuestions.js');
+var config          = require('./config.js');
 
 $(function () {
+    var urls = config.local;
+
+    createQuestion.setUrls(urls);
     createQuestion.init();
+
+    deleteQuestions.setUrls(urls);
     deleteQuestions.init();
 
     $('#editMode').hide();
 
     $('#createBtn').trigger('click'); // display create view on page load
 });
-},{"./classes/EditCreateQuestion.js":2,"./classes/deleteQuestions.js":4}],2:[function(require,module,exports){
+},{"./classes/EditCreateQuestion.js":2,"./classes/deleteQuestions.js":4,"./config.js":10}],2:[function(require,module,exports){
 'use strict';
 
-var appState = require('./appState.js');
-var VS       = require('./services/ViewService.js');
-var VO       = require('./services/vo/EditCreateViewVO.js');
+var appState  = require('./appState.js');
+var VS        = require('./services/ViewService.js');
+var KeepScope = require('./helpers/KeepScope.js');
 
 var editCreateQuestion = {
 
@@ -27,13 +33,24 @@ var editCreateQuestion = {
 
     entry: false,
 
+    keepScope: new KeepScope(),
+
+    vs: new VS(),
+
+    urls: {},
+
+    setUrls: function (urls) {
+        this.urls = urls;
+    },
+
     init: function (entry) {
         var self = this;
+
         if (entry) {
             this.entry = entry;
             this.setup(entry);
         } else {
-            $('#createBtn').on('click', this.keepScope(this.setup, this));
+            $('#createBtn').on('click', this.keepScope.save(this.setup, this));
         }
     },
 
@@ -41,9 +58,10 @@ var editCreateQuestion = {
         var self = this;
 
         function onViewLoaded() {
+            console.log('onViewLoaded');
             $('#view')
                 .empty()
-                .append(VO.content);
+                .append(self.vs.getVO());
 
             var $addButton       = $('#addButton'),
                 $removeButton    = $('#removeButton'),
@@ -135,24 +153,18 @@ var editCreateQuestion = {
                 $('#editMode').hide();
             }
 
-            if (VO.content === '') {
-                VS.loaded.addOnce(onViewLoaded);
-                VS.getView('./views/create.html');
-            } else {
+            if (self.vs.getVO() === undefined) {
+                self.vs.loaded.addOnce(onViewLoaded);
+                self.vs.getView('./views/create.html');
+            } else { // already loaded
                 onViewLoaded();
             }
         }
-    },
-
-    keepScope: function (listener, context) {
-        return function () {
-            listener.call(context);
-        };
     }
  };
 
 module.exports = editCreateQuestion;
-},{"./appState.js":3,"./services/ViewService.js":5,"./services/vo/EditCreateViewVO.js":7}],3:[function(require,module,exports){
+},{"./appState.js":3,"./helpers/KeepScope.js":5,"./services/ViewService.js":7}],3:[function(require,module,exports){
 'use strict';
 
 var appState = {
@@ -175,115 +187,205 @@ module.exports = appState;
 
 var appState     = require('./appState.js');
 var editQuestion = require('./EditCreateQuestion.js');
-var VO           = require('./services/vo/deleteViewVO.js');
+var VS           = require('./services/ViewService.js');
+var QS           = require('./services/QuestionsJSONService.js');
+var JsonVo       = require('./services/vo/JsonVO.js');
+var KeepScope    = require('./helpers/KeepScope.js');
+
 
 var deleteQuestions = {
+    keepScope: new KeepScope(),
+
+    urls: {},
+
+    setUrls: function (urls) {
+        this.urls = urls;
+    },
+
     init: function () {
-        $('#deleteBtn').on('click', function () {
-            var $deleteBtn = $(this);
+        var self = this;
 
-            if(!appState.isDelete) {
-                $('#createBtn').removeClass('selectedBtn');
-                $(this).addClass('selectedBtn');
-
-                appState.isCreate = false;
-                appState.isEdit   = false;
-                appState.isDelete = true;
-
-                $('#editMode').hide();
-
-                $.get('./views/delete.html', function (data) {
-                    $('#view')
-                        .empty()
-                        .append(data);
-                    // TODO: sortir cette function
-                    $.getJSON('http://127.0.0.1:8765/questions', function (data) {
-                        var $questionsContainer = $('#questionsContainer');
-
-                        $.each(data, function (key, entry) {
-                            // TODO : sortir le html
-                            var question = '<li><input type="checkbox" id="'+entry._id+'" name="'+entry._id+'"><label class="checkbox inline" for="'+key+'">'+entry.question+'</label></li>';
-                            $questionsContainer.append(question);
-                            $('#'+entry._id)
-                                .next()
-                                .on('mouseenter', function (e) {
-                                    $(this)
-                                        .removeClass('rollOut')
-                                        .addClass('rollOver');
-                                })
-                                .on('mouseleave', function (e) {
-                                    $(this)
-                                        .removeClass('rollOver')
-                                        .addClass('rollOut');
-                                })
-                                .on('click', function (e) {
-                                    editQuestion.init(entry);
-                                });
-                        });
-                        $('#deleteForm').submit(function (e) {
-                            e.preventDefault();
-                            var serializedForm = $(this).serialize();
-                            if ($('input[type=checkbox]:checked').length !== 0) { // if no checkbox are checked disable submit button
-                                $.post('http://127.0.0.1:8765/questionsDelete', serializedForm)
-                                    .done(function () {
-                                        appState.isDelete = false; // needed to reload the page
-                                        $deleteBtn.trigger('click'); // reload the page
-                                    })
-                                    .fail(function () {
-                                        $('#errMessage').css('color', '#f00');
-                                        $('#errMessage').text('delete error');
-                                    });
-                            }
-                        });
-                    });
-                });
-            }
+        $('#deleteBtn').on('click', function (event) {
+            self.keepScope.save(self.setup, self, event)();
         });
+    },
+
+    vs: {},
+
+    setup: function (event) {
+        var self = this,
+            $deleteBtn = $(event.currentTarget);
+
+        this.vs = new VS();
+
+        function loadQuestionsJSON() {
+            QS.loaded.addOnce(onViewLoaded);
+            QS.getJSON(self.urls.jsonUrl);
+        }
+
+        function onViewLoaded () {
+            var $questionsContainer = {};
+            $('#view')
+                .empty()
+                .append(self.vs.getVO());
+
+            $questionsContainer = $('#questionsContainer');
+
+            $.each(JsonVo.content, function (key, entry) {
+                var question = '<li><input type="checkbox" id="'+entry._id+'" name="'+entry._id+'"><label class="checkbox inline" for="'+key+'">'+entry.question+'</label></li>';
+                $questionsContainer.append(question);
+                $('#'+entry._id)
+                    .next()
+                    .on('mouseenter', function (e) {
+                        $(this)
+                            .removeClass('rollOut')
+                            .addClass('rollOver');
+                    })
+                    .on('mouseleave', function (e) {
+                        $(this)
+                            .removeClass('rollOver')
+                            .addClass('rollOut');
+                    })
+                    .on('click', function (e) {
+                        editQuestion.init(entry);
+                    });
+            });
+            $('#deleteForm').submit(function (e) {
+                e.preventDefault();
+                var serializedForm = $(this).serialize();
+                if ($('input[type=checkbox]:checked').length !== 0) { // if no checkbox are checked disable submit button
+                    $.post(self.urls.deleteRESTUrl, serializedForm)
+                        .done(function () {
+                            appState.isDelete = false; // needed to reload the page
+                            self.vs = null;
+                            $deleteBtn.trigger('click'); // reload the page
+                        })
+                        .fail(function () {
+                            $('#errMessage')
+                                .css('color', '#f00')
+                                .text('delete error');
+                        });
+                }
+            });
+        }
+
+        if(!appState.isDelete) {
+            $('#createBtn').removeClass('selectedBtn');
+            $deleteBtn.addClass('selectedBtn');
+
+            appState.isCreate = false;
+            appState.isEdit   = false;
+            appState.isDelete = true;
+
+            $('#editMode').hide();
+
+            if (self.vs.getVO() === undefined) {
+                self.vs.loaded.addOnce(loadQuestionsJSON);
+                self.vs.getView('./views/delete.html');
+            } else {
+                onViewLoaded();
+            }
+        }
+
+
     }
 };
 
 module.exports = deleteQuestions;
-},{"./EditCreateQuestion.js":2,"./appState.js":3,"./services/vo/deleteViewVO.js":8}],5:[function(require,module,exports){
+},{"./EditCreateQuestion.js":2,"./appState.js":3,"./helpers/KeepScope.js":5,"./services/QuestionsJSONService.js":6,"./services/ViewService.js":7,"./services/vo/JsonVO.js":8}],5:[function(require,module,exports){
+'use strict';
+
+var KeepScope = function (){
+    this.save = function (listener, context, event) {
+        return function () {
+            listener.call(context, event);
+        };
+    };
+};
+
+module.exports = KeepScope;
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var signals = require('signals');
-var EditCreateVO = require('./vo/EditCreateViewVO.js');
-var DeleteVO = require('./vo/DeleteViewVO.js');
+var jsonVO  = require('./vo/JsonVO.js');
 
 var VS = {
-
     loaded: new signals.Signal(),
 
-    getView: function (view) {
+    getJSON: function (url) {
         var self = this;
 
-        $.get(view, function (data) {
-            if(view.search('create')) {
-                EditCreateVO.content = data;
-            }
-            if(view.search('delete')) {
-                DeleteVO.content = data;
-            }
+        $.get(url, function (json) {
+            jsonVO.content = json;
             self.loaded.dispatch();
         });
     }
 };
 
 module.exports = VS;
+},{"./vo/JsonVO.js":8,"signals":11}],7:[function(require,module,exports){
+'use strict';
+
+var signals = require('signals');
+var GenericVO = require('./vo/vo.js');
+
+var VS = function () {
+    this.vo = new GenericVO();
+
+    this.setVO = function (vo) {
+        this.vo.content = vo;
+        this.loaded.dispatch();
+    };
+
+    this.getVO = function () {
+        return this.vo.content;
+    };
+
+    this.loaded = new signals.Signal();
+
+    this.getView = function (view) {
+        var self = this;
+
+        $.get(view, function (data) {
+            self.setVO(data);
+//            self.loaded.dispatch();
+        });
+    };
+};
+
+module.exports = VS;
 
 
-},{"./vo/DeleteViewVO.js":6,"./vo/EditCreateViewVO.js":7,"signals":9}],6:[function(require,module,exports){
+},{"./vo/vo.js":9,"signals":11}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = {
-    content: ''
-}
-
-},{}],7:[function(require,module,exports){
-module.exports=require(6)
-},{}],8:[function(require,module,exports){
-module.exports=require(6)
+    content:''
+};
 },{}],9:[function(require,module,exports){
+'use strict';
+
+module.exports = function (content) {
+    this.content = content;
+}
+},{}],10:[function(require,module,exports){
+'use strict';
+
+exports.local = {
+    createRESTURL: 'http://127.0.0.1:8765/questions',
+    editRESTURL:   'http://127.0.0.1:8765/questionsUpdate',
+    deleteRESTUrl: 'http://127.0.0.1:8765/questionsDelete',
+    jsonUrl:       'http://127.0.0.1:8765/questions'
+};
+
+exports.online = {
+    createRESTURL: '',
+    editRESTURL:   '',
+    deleteRESTUrl: '',
+    jsonUrl:       ''
+};
+},{}],11:[function(require,module,exports){
 /*jslint onevar:true, undef:true, newcap:true, regexp:true, bitwise:true, maxerr:50, indent:4, white:false, nomen:false, plusplus:false */
 /*global define:false, require:false, exports:false, module:false, signals:false */
 

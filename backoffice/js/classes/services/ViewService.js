@@ -1,26 +1,30 @@
 'use strict';
 
 var signals = require('signals');
-var EditCreateVO = require('./vo/EditCreateViewVO.js');
-var DeleteVO = require('./vo/DeleteViewVO.js');
+var GenericVO = require('./vo/vo.js');
 
-var VS = {
+var VS = function () {
+    this.vo = new GenericVO();
 
-    loaded: new signals.Signal(),
+    this.setVO = function (vo) {
+        this.vo.content = vo;
+        this.loaded.dispatch();
+    };
 
-    getView: function (view) {
+    this.getVO = function () {
+        return this.vo.content;
+    };
+
+    this.loaded = new signals.Signal();
+
+    this.getView = function (view) {
         var self = this;
 
         $.get(view, function (data) {
-            if(view.search('create')) {
-                EditCreateVO.content = data;
-            }
-            if(view.search('delete')) {
-                DeleteVO.content = data;
-            }
-            self.loaded.dispatch();
+            self.setVO(data);
+//            self.loaded.dispatch();
         });
-    }
+    };
 };
 
 module.exports = VS;
