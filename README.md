@@ -1,4 +1,6 @@
 SPAquizMongo
 ============
 
-JS quiz with RequireJS / jQuery / HandlebarsJS / js-signals / Bootstrap
+JS quiz with RequireJS / jQuery / HandlebarsJS / js-signals / Bootstrap.
+
+The backoffice uses the npm format with Browserify.
