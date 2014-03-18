@@ -1,12 +1,22 @@
-define(['jquery'], function ($) {
+define(function (require) {
 
     "use strict";
+
+    var 
+        $           = require('jquery'),
+        Main        = require('classes/main'),
+        QS          = require('classes/services/questionService'), 
+        questionsVO = require('classes/services/vo/questionsVO'),
+        TS          = require('classes/services/templateService'), 
+        templateVO  = require('classes/services/vo/templateVO');
 
     return {
         $login: $('#login'),
         init: function (main) {
             var self = this;
-            $('#welcomeName').text(self.getCookies('name'));
+
+            QS.loaded.addOnce(self.onJsonLoaded);
+            TS.loaded.addOnce(self.onTemplateLoaded);
 
             $('#signin_button').on('click', function (e) {
                 e.preventDefault();
@@ -19,28 +29,23 @@ define(['jquery'], function ($) {
                     self.signinHandler(main);
                 }
             });
+
+            $('#password').on('keypress', function (e) {
+                $('#wrongLogin').text('');
+            })
         },
         signinHandler: function (main) {
-            var userName = $('#userName').val();
-            var password = $('#password').val();
-            if (localStorage.userName === userName && localStorage.password === password) {
-                this.$login.hide();
-                main.init();
-            } else {
-                $('#wrongLogin').text('wrong name/password');
-            }
+
+            QS.getJson();
         },
-        getCookies: function (value) {
-            var list = document.cookie.split("; ");
-            var theName = 'unknow';
-            for (var i=0; i< list.length; i++) {
-                var cookie = list[i];
-                if (!cookie.indexOf(value)) {
-                    var index = cookie.indexOf('=');
-                    theName = cookie.substring(index+1);
-                }
-            }
-            return theName;
+        onJsonLoaded: function () {
+            Main.initQuestions(questionsVo);
+            TS.getTemplate();
+        },
+        onTemplateLoaded: function () {
+            Main.tplFunc = templateVO.tplFunc;
+            $('#login').hide();
+            Main.init();
         }
     }
 });

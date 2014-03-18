@@ -1,24 +1,40 @@
 ;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var createQuestion  = require('./classes/EditCreateQuestion.js');
-var deleteQuestions = require('./classes/deleteQuestions.js');
-var config          = require('./config.js');
+var login           = require('./classes/Login.js');
+var afterLogin      = require('./classes/AfterLogin.js');
 
 $(function () {
-    var urls = config.local;
-
-    createQuestion.setUrls(urls);
-    createQuestion.init();
-
-    deleteQuestions.setUrls(urls);
-    deleteQuestions.init();
-
-    $('#editMode').hide();
-
-    $('#createBtn').trigger('click'); // display create view on page load
+    login.init(afterLogin);
 });
-},{"./classes/EditCreateQuestion.js":2,"./classes/deleteQuestions.js":4,"./config.js":10}],2:[function(require,module,exports){
+
+
+},{"./classes/AfterLogin.js":2,"./classes/Login.js":4}],2:[function(require,module,exports){
+'use strict';
+
+var createQuestion  = require('./EditCreateQuestion.js');
+var deleteQuestions = require('./deleteQuestions.js');
+var config          = require('../config.js');
+
+module.exports = {
+    // urls: config.local,
+    urls: config.online,
+    loginComplete: function() {
+        $('#login').empty();
+        $('#menuView').show();
+
+        createQuestion.setUrls(this.urls);
+        createQuestion.init();
+
+        deleteQuestions.setUrls(this.urls);
+        deleteQuestions.init();
+
+        $('#editMode').hide();
+
+        $('#createBtn').trigger('click'); // display create view on page load
+    }
+}
+},{"../config.js":12,"./EditCreateQuestion.js":3,"./deleteQuestions.js":6}],3:[function(require,module,exports){
 'use strict';
 
 var appState  = require('./appState.js');
@@ -175,7 +191,42 @@ var editCreateQuestion = {
  };
 
 module.exports = editCreateQuestion;
-},{"./appState.js":3,"./helpers/KeepScope.js":5,"./services/ViewService.js":7}],3:[function(require,module,exports){
+},{"./appState.js":5,"./helpers/KeepScope.js":7,"./services/ViewService.js":9}],4:[function(require,module,exports){
+'use strict';
+
+//var MongoAccess = require('../../../js/nodeScripts/mongoAccess.js');
+
+module.exports = {
+    $login: $('#login'),
+    init: function (afterLogin) {
+        var self = this;
+
+        $('#signin_button').on('click', function (e) {
+            e.preventDefault();
+            self.signinHandler(afterLogin);
+        });
+
+        $('#login').on('keypress', function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                self.signinHandler(afterLogin);
+            }
+        });
+    },
+    signinHandler: function (afterLogin) {
+        var userName = $('#userName').val();
+        var password = $('#password').val();
+        if (localStorage.userName === userName && localStorage.password === password) {
+            this.$login.hide();
+            afterLogin.loginComplete();
+        } else {
+            $('#wrongLogin').text('wrong name/password');
+        }
+    }
+};
+
+
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var appState = {
@@ -193,7 +244,7 @@ var appState = {
 
 module.exports = appState;
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var appState     = require('./appState.js');
@@ -311,7 +362,7 @@ var deleteQuestions = {
 };
 
 module.exports = deleteQuestions;
-},{"./EditCreateQuestion.js":2,"./appState.js":3,"./helpers/KeepScope.js":5,"./services/QuestionsJSONService.js":6,"./services/ViewService.js":7,"./services/vo/JsonVO.js":8}],5:[function(require,module,exports){
+},{"./EditCreateQuestion.js":3,"./appState.js":5,"./helpers/KeepScope.js":7,"./services/QuestionsJSONService.js":8,"./services/ViewService.js":9,"./services/vo/JsonVO.js":10}],7:[function(require,module,exports){
 'use strict';
 
 var KeepScope = function (){
@@ -323,7 +374,7 @@ var KeepScope = function (){
 };
 
 module.exports = KeepScope;
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 var signals = require('signals');
@@ -343,7 +394,7 @@ var VS = {
 };
 
 module.exports = VS;
-},{"./vo/JsonVO.js":8,"signals":11}],7:[function(require,module,exports){
+},{"./vo/JsonVO.js":10,"signals":13}],9:[function(require,module,exports){
 'use strict';
 
 var signals = require('signals');
@@ -376,19 +427,19 @@ var VS = function () {
 module.exports = VS;
 
 
-},{"./vo/vo.js":9,"signals":11}],8:[function(require,module,exports){
+},{"./vo/vo.js":11,"signals":13}],10:[function(require,module,exports){
 'use strict';
 
 module.exports = {
     content:''
 };
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 module.exports = function (content) {
     this.content = content;
 }
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 exports.local = {
@@ -399,12 +450,12 @@ exports.local = {
 };
 
 exports.online = {
-    createRESTURL: '',
-    editRESTURL:   '',
-    deleteRESTUrl: '',
-    jsonUrl:       ''
+    createRESTURL: 'http://www.hexafarm.com:8765/questions',
+    editRESTURL:   'http://www.hexafarm.com:8765/questionsUpdate',
+    deleteRESTUrl: 'http://www.hexafarm.com:8765/questionsDelete',
+    jsonUrl:       'http://www.hexafarm.com:8765/questions'
 };
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*jslint onevar:true, undef:true, newcap:true, regexp:true, bitwise:true, maxerr:50, indent:4, white:false, nomen:false, plusplus:false */
 /*global define:false, require:false, exports:false, module:false, signals:false */
 

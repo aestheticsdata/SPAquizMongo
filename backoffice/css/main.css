@@ -69,3 +69,29 @@ i[class*="icon"] {
     text-decoration: none;
     color: #000;
 }
+
+.wrapper {
+    width: 640px;
+    margin:0 auto;
+}
+
+.wrapper #login {
+    background-color: #12b434;
+}
+
+.wrapper #afterLogin {
+    height: 240px;
+    background-color: #b1bead;
+}
+
+#warnValidate {
+    color: #f00;
+}
+
+#login p {
+    text-align: center;
+}
+
+#menuView {
+    display: none;
+}

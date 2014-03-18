@@ -1,19 +1,9 @@
 'use strict';
 
-var createQuestion  = require('./classes/EditCreateQuestion.js');
-var deleteQuestions = require('./classes/deleteQuestions.js');
-var config          = require('./config.js');
+var login           = require('./classes/Login.js');
+var afterLogin      = require('./classes/AfterLogin.js');
 
 $(function () {
-    var urls = config.local;
-
-    createQuestion.setUrls(urls);
-    createQuestion.init();
-
-    deleteQuestions.setUrls(urls);
-    deleteQuestions.init();
-
-    $('#editMode').hide();
-
-    $('#createBtn').trigger('click'); // display create view on page load
+    login.init(afterLogin);
 });
+

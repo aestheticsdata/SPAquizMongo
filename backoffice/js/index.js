@@ -55,7 +55,9 @@ $(function () {
                $('#questionForm').submit(function (e) {
                    e.preventDefault();
                    var serializedForm = $(this).serialize();
-                   $.post('http://127.0.0.1:8765/questions', serializedForm)
+                   $.post('http://www.hexfarm.com:8765/questions', serializedForm)
+                   // $.post('http://127.0.0.1:8765/questions', serializedForm)
+                   // $.post('http://127.0.0.1:8990/questions', serializedForm)
                        .done(function () {
                            $logMessage
                                .text('question inserted into DB')
@@ -75,6 +77,7 @@ $(function () {
    });
 
    $('#deleteBtn').on('click', function () {
+        console.log('delete button');
         var $deleteBtn = $(this);
 
         if(!isDelete) {
@@ -93,7 +96,9 @@ $(function () {
                     .empty()
                     .append(data);
                 // TODO: sortir cette function
-                $.getJSON('http://127.0.0.1:8765/questions', function (data) {
+                $.getJSON('http://www.hexfarm.com:8765/questions', function (data) {
+                // $.getJSON('http://127.0.0.1:8765/questions', function (data) {
+                // $.getJSON('http://127.0.0.1:8990/questions', function (data) {
                     var $questionsContainer = $('#questionsContainer');
 
                     $.each(data, function (key, entry) {
@@ -120,7 +125,9 @@ $(function () {
                         e.preventDefault();
                         var serializedForm = $(this).serialize();
                         if ($('input[type=checkbox]:checked').length !== 0) { // if no checkbox are checked disable submit button
-                            $.post('http://127.0.0.1:8765/questionsDelete', serializedForm)
+                            $.post('http://www.hexfarm.com:8765/questionsDelete', serializedForm)
+                            // $.post('http://127.0.0.1:8765/questionsDelete', serializedForm)
+                            // $.post('http://127.0.0.1:8990/questionsDelete', serializedForm)
                                 .done(function () {
                                     isDelete = false;
                                     $deleteBtn.trigger('click');
@@ -191,7 +198,9 @@ $(function () {
                $('#editForm').submit(function (e) {
                    e.preventDefault();
                    var serializedForm = $(this).serialize();
-                   $.post('http://127.0.0.1:8765/questionsUpdate', serializedForm)
+                   $.post('http://www.hexfarm.com:8765/questionsUpdate', serializedForm)
+                   // $.post('http://127.0.0.1:8765/questionsUpdate', serializedForm)
+                   // $.post('http://127.0.0.1:8990/questionsUpdate', serializedForm)
                        .done(function () {
                            $logMessage
                                .text('question updated')

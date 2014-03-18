@@ -8,12 +8,12 @@ var Server = require('mongodb').Server;
 var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 
-var mongoclient = new MongoClient(new Server("127.0.0.1", 27017, {native_parser:true}));
+var mongoclient = new MongoClient(new Server("http://www.hexafarm.com", 27017, {native_parser:true}));
 
 var db;
 mongoclient.open(function (err, mongoclient) {
     db = mongoclient.db('quiz');
-    db.authenticate('telemacus', '040675', function (err, result) {
+    db.authenticate('guest', '15032014', function (err, result) {
         if (result) {
             exports.dbCollection = db.collection('questions');
         } else {

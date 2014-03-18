@@ -9,12 +9,21 @@ define(function (require) {
         
         getJson: function () {
             self = this;
-            $.getJSON('http://'+location.hostname+':8765/questions', function (jsonQuestions) {
-
-                questionsVo.allQuestions    = jsonQuestions;
-                questionsVo.questionsLength = questionsVo.allQuestions.length;
-
-                self.loaded.dispatch();               
+            
+            $.ajax({
+                type     : 'POST',
+                url      : 'http://'+location.hostname+':8990/login',
+                data     : {username:$('#userName').val(), password:$('#password').val()},
+                success  : function (jsonQuestions) {
+                    // console.log(jsonQuestions);
+                    questionsVo.allQuestions    = jsonQuestions;
+                    questionsVo.questionsLength = questionsVo.allQuestions.length;
+                    self.loaded.dispatch();
+                },
+                error    : function () {
+                    $('#wrongLogin').text('wrong usename/password');
+                },
+                dataType : 'json' 
             });
         }
     };

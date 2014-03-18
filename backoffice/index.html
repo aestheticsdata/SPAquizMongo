@@ -12,12 +12,37 @@
     </head>
 
     <body>
-        <h1>Backoffice SPAquizMongo</h1>
-        <div id="buttonBar">
-            <button id="createBtn" class="btn btn-success"><i class="icon-pencil"></i>create question</button>
-            <button id="deleteBtn" class="btn btn-warning"><i class="icon-remove"></i>delete / edit question(s)</button>
-            <span id="editMode">Edit Mode</span>
-            <!--<button id="editBtn" class="btn btn-primary"><i class="icon-edit"></i>edit question</button>-->
+
+        <div id="login">
+            <div class="row">
+                <!--<div class="span12">-->
+                <h2><p class="text-center">Backoffice SPAquizMongo <span id="welcomeName"></span></p></h2>
+                <!--</div>-->
+            </div>
+            <div class="row">
+                <div class="container">
+                    <form class="form-signin">
+                        <h3 class="form-signin-heading">Please sign in</h3>
+                        <input type="text" class="input-block-level" placeholder="user name" id="userName">
+                        <input type="password" class="input-block-level" placeholder="Password" id="password">
+                        <input class="btn btn-small btn-primary" type="button" value="sign in" id="signin_button"></button>
+                    </form>
+
+                </div>
+            </div>
+            <div class="row">
+                <div id="wrongLogin" class="span12 text-center text-error"></div>
+            </div>
+        </div>
+
+        <div id="menuView">
+            <h1>Backoffice SPAquizMongo</h1>
+            <div id="buttonBar">
+                <button id="createBtn" class="btn btn-success"><i class="icon-pencil"></i>create question</button>
+                <button id="deleteBtn" class="btn btn-warning"><i class="icon-remove"></i>delete / edit question(s)</button>
+                <span id="editMode">Edit Mode</span>
+                <!--<button id="editBtn" class="btn btn-primary"><i class="icon-edit"></i>edit question</button>-->
+            </div>
         </div>
 
         <div id="editBtn"></div>

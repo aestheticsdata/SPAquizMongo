@@ -23,11 +23,6 @@ function ($,        Main,           Login,           StartSeq) {
         localStorage.userName = 'joe';
         localStorage.password = '123';
 
-        function onStartupCompleted() {
-            Login.init(Main);
-        }
-
-        StartSeq.startupCompleted.add(onStartupCompleted);
-        StartSeq.start();
+        Login.init(Main);
     });
 });
