@@ -5,6 +5,9 @@ var login           = require('./classes/Login.js');
 var afterLogin      = require('./classes/AfterLogin.js');
 
 $(function () {
+	localStorage.userName = 'guest';
+    localStorage.password = '15032014';
+
     login.init(afterLogin);
 });
 

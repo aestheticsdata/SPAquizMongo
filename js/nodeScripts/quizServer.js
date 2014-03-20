@@ -22,39 +22,12 @@ function restrict(req, res, next) {
 	}
 }
 
-// app.use(express.basicAuth(function (user, pwd) {
-//     return user === 'user' && pwd === 'password';
-// }));
-
-// app.get('/foo', function (req, res) {
-//     mongoAccess.dbCollection.find().toArray(function (err, questionsJson) {
-//         res.header("Access-Control-Allow-Origin", "*");
-//         res.send(questionsJson);
-//     });
-// });
-
-// app.get('/login', function (req, res) {
-// 	res.send('<form method="post" action="/login">' +
-//   '<p>' +
-//     '<label>Username:</label>' +
-//     '<input type="text" name="username">' +
-//   '</p>' +
-//   '<p>' +
-//     '<label>Password:</label>' +
-//     '<input type="password" name="password">' +
-//   '</p>' +
-//   '<p>' +
-//     '<input type="submit" value="Login">' +
-//   '</p>' +
-//   '</form>');
-// });
-
 app.post('/login', function (req, res) {
 	
 	var username = req.body.username,
 		password = req.body.password;
 
-	if (username === 'telemacus' && password === '040675') {
+	if (username === 'user' && password === 'pass') {
 		req.session.regenerate(function () {
 			req.session.user = username;
 			// res.redirect('questions');
@@ -72,7 +45,6 @@ app.post('/login', function (req, res) {
 
 // app.get('/questions', restrict, function (req, res) {
 app.get('/questions', function (req, res) {
-	console.log('/questions requested');
     mongoAccess.dbCollection.find().toArray(function (err, questionsJson) {
         res.header("Access-Control-Allow-Origin", "*");
         res.send(questionsJson);

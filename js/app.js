@@ -20,8 +20,8 @@ function ($,        Main,           Login,           StartSeq) {
 
     $(function () {
 
-        localStorage.userName = 'joe';
-        localStorage.password = '123';
+        // localStorage.userName = 'user';
+        // localStorage.password = 'pass';
 
         Login.init(Main);
     });

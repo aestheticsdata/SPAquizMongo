@@ -13,7 +13,7 @@ var mongoclient = new MongoClient(new Server("http://www.hexafarm.com", 27017, {
 var db;
 mongoclient.open(function (err, mongoclient) {
     db = mongoclient.db('quiz');
-    db.authenticate('guest', '15032014', function (err, result) {
+    db.authenticate('user', 'pass', function (err, result) {
         if (result) {
             exports.dbCollection = db.collection('questions');
         } else {

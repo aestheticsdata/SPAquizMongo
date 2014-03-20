@@ -18,8 +18,6 @@ restServer.listen(8765);
 
 function getQuestions(req, res, next) {
 
-    // mongoAccess.getQuestion('user', 'password', req, res);
-
     mongoAccess.dbCollection.find().toArray(function (err, questionsJson) {
     	res.header("Access-Control-Allow-Origin", "*");
     	res.send(questionsJson);
@@ -34,7 +32,6 @@ function addQuestion(req, res, next) {
 
 function deleteQuestion(req, res, next) {
     mongoAccess.deleteQuestions(req.params, res);
-//    res.send(200);
 }
 
 function updateQuestion(req, res, next) {
