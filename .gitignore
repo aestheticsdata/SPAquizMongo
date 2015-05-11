@@ -2,8 +2,8 @@ node_modules
 .DS_Store
 /libs
 /node_modules
-/nodeScripts/mongoAccess.bak.js
-/nodeScripts/mongoAccess.js
+js/nodeScripts/mongoAccess.bak.js
+js/nodeScripts/mongoAccess.js
 /backoffice/js/config.js
 /build
 /backoffice/build.js

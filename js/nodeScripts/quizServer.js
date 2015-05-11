@@ -22,6 +22,14 @@ function restrict(req, res, next) {
 	}
 }
 
+// enable CORS - especially when AngularJS $http.post doing a pre-flight OPTIONS request before POST
+app.all('*', function(req, res, next) {
+       res.header("Access-Control-Allow-Origin", "*");
+       res.header("Access-Control-Allow-Headers", "X-Requested-With");
+       res.header('Access-Control-Allow-Headers', 'Content-Type');
+       next();
+});
+
 app.post('/login', function (req, res) {
 	
 	var username = req.body.username,
