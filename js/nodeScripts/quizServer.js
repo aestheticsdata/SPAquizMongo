@@ -22,7 +22,16 @@ function restrict(req, res, next) {
 	}
 }
 
-// enable CORS - especially when AngularJS $http.post doing a pre-flight OPTIONS request before POST
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
+}
+
 app.all('*', function(req, res, next) {
        res.header("Access-Control-Allow-Origin", "*");
        res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -35,14 +44,15 @@ app.post('/login', function (req, res) {
 	var username = req.body.username,
 		password = req.body.password;
 
-	if (username === 'user' && password === 'pass') {
+	if (username === 'guest' && password === '15032014') {
 		req.session.regenerate(function () {
 			req.session.user = username;
 			// res.redirect('questions');
 			mongoAccess.dbCollection.find().toArray(function (err, questionsJson) {
-        		res.header("Access-Control-Allow-Origin", "*");
-        		res.send(questionsJson);
-    		});
+        			res.header("Access-Control-Allow-Origin", "*");
+        			shuffle(questionsJson);
+				res.send(questionsJson);
+    			});
 		});
 	} else {
 		// res.redirect('/login');
@@ -55,7 +65,8 @@ app.post('/login', function (req, res) {
 app.get('/questions', function (req, res) {
     mongoAccess.dbCollection.find().toArray(function (err, questionsJson) {
         res.header("Access-Control-Allow-Origin", "*");
-        res.send(questionsJson);
+        shuffle(questionsJson);
+	res.send(questionsJson);
     });
 });
 
