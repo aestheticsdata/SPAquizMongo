@@ -1,4 +1,7 @@
 'use strict';
+
+// restsever is used by the backoffice
+
 var restify     = require('restify');
 var mongoAccess = require('./mongoAccess');
 

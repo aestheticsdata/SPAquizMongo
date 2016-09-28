@@ -1,5 +1,7 @@
 'use strict';
 
+// quizServer is used by the application (not the backoffice -> see restserver.js)
+
 var express = require('express');
 var mongoAccess = require('./mongoAccess');
 
@@ -16,7 +18,7 @@ function restrict(req, res, next) {
 	} else {
 		console.log('redirect to login');
 		console.log(req.session);
-		
+
 		req.session.error = 'access denied';
 		res.redirect('/login');
 	}
@@ -40,7 +42,7 @@ app.all('*', function(req, res, next) {
 });
 
 app.post('/login', function (req, res) {
-	
+
 	var username = req.body.username,
 		password = req.body.password;
 
